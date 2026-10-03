@@ -1,0 +1,55 @@
+name: one_tap_location
+description: Gets the location with one tap on the Android 17 system location button or iOS CLLocationButton, with a fallback on Android 7 to 16. Required by the Google Play location policy.
+version: 0.1.0
+repository: https://github.com/Chemeindefer/one_tap_location
+issue_tracker: https://github.com/Chemeindefer/one_tap_location/issues
+topics:
+  - location
+  - permissions
+  - privacy
+  - geolocation
+  - widget
+
+screenshots:
+  - description: "One tap, one fix, consent drawn by the system: CLLocationButton on iOS 15+, the Android 17+ system button, a fallback on Android 7–16."
+    path: doc/cover.png
+  - description: "One tap shares a single location fix on iOS — the system-drawn CLLocationButton in its default look."
+    path: doc/screenshots/01_ios_button.png
+  - description: "First tap on iOS: a one-time system alert explains sharing. Later taps skip it."
+    path: doc/screenshots/02_ios_alert.png
+  - description: "The full result: latitude, longitude, horizontalAccuracy, altitude, timestamp, isPrecise — missing values show as a dash."
+    path: doc/screenshots/03_ios_result.png
+  - description: "On Android 17 the system draws the location button above all Flutter content."
+    path: doc/screenshots/04_android_system_button.png
+  - description: "Android 17 consent: one-time precise access, kept only until you close the app."
+    path: doc/screenshots/05_android_consent.png
+  - description: "Android 7–16: the package draws a fallback button with the same sizes and opens the standard dialog."
+    path: doc/screenshots/06_android_fallback.png
+  - description: "'Only this time' is removed a while after the app goes to background; 'While using the app' persists."
+    path: doc/screenshots/07_android_permission_dialog.png
+  - description: "Approximate fix: isPrecise false, altitude null, timestamp may be up to 10 minutes old."
+    path: doc/screenshots/08_android_approximate.png
+  - description: "Dark theme on iOS — every outcome is a typed result: Granted, Denied or Failed."
+    path: doc/screenshots/09_ios_dark.png
+
+environment:
+  sdk: ^3.12.0
+  flutter: ">=3.44.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.batuhandelice.one_tap_location
+        pluginClass: OneTapLocationPlugin
+      ios:
+        pluginClass: OneTapLocationPlugin

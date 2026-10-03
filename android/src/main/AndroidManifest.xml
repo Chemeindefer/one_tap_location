@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Required to show the system location button on Android 17 and later. -->
+    <uses-permission android:name="android.permission.USE_LOCATION_BUTTON" />
+    <queries>
+        <!-- Identifies the system confirmation of the location button. -->
+        <intent>
+            <action android:name="android.app.permissionui.action.REQUEST_LOCATION_BUTTON_PERMISSIONS" />
+        </intent>
+    </queries>
+</manifest>

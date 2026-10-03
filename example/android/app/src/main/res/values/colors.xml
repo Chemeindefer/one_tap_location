@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The background of the app in lib/src/theme.dart, so that the launch window matches the first frame -->
+    <color name="window_background">#FFF6F7F9</color>
+    <!-- The background of the launcher icon, light in both themes so that the
+         icon keeps its shape on a dark home screen -->
+    <color name="ic_launcher_background">#FFF6F7F9</color>
+</resources>
