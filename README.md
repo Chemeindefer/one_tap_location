@@ -460,6 +460,23 @@ The plugin requires iOS 15 or later. Set the iOS deployment target of the
 platform :ios, '15.0'
 ```
 
+Xcode 27 builds for iOS 15 and later, while the Flutter pod still targets
+iOS 13, so `pod install` leaves a target that Xcode rejects with "The iOS
+deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 13.0". Until the
+Flutter pod moves, raise every pod target in the `post_install` hook that
+`flutter create` writes into `ios/Podfile`:
+
+```ruby
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    flutter_additional_ios_build_settings(target)
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+    end
+  end
+end
+```
+
 Add a location usage description to `ios/Runner/Info.plist`:
 
 ```xml

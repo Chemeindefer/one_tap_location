@@ -1,3 +1,9 @@
+## 0.1.1
+
+* Documents the `post_install` hook that an app needs in `ios/Podfile` to build
+  with Xcode 27, which does not build for the iOS 13 that the Flutter pod still
+  targets.
+
 ## 0.1.0
 
 * Initial release of `OneTapLocationButton`, backed by `CLLocationButton` on
