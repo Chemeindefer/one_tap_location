@@ -8,7 +8,7 @@
 * Documents the package next to `geolocator` and `permission_handler`: the
   app's own `ACCESS_FINE_LOCATION` declaration stays the only one in the
   merged manifest, the `onlyForLocationButton` flag keeps other packages from
-  obtaining precise location, and access granted through the system button is
+  requesting precise location, and access granted through the system button is
   visible to every package for as long as it lasts.
 
 ## 0.1.1

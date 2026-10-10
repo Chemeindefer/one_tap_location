@@ -328,7 +328,7 @@ The entries this plugin does add are listed in
 What the packages share is the `onlyForLocationButton` flag described in
 [Google Play location policy](#google-play-location-policy):
 
-* With the flag, no other package obtains precise location. The flag
+* With the flag, no other package can request precise location. The flag
   restricts precise location to the system button, so the runtime request that
   `geolocator` and `permission_handler` issue offers approximate location
   only, whatever the target API level of the app: `ACCESS_FINE_LOCATION` is
@@ -338,8 +338,9 @@ What the packages share is the `onlyForLocationButton` flag described in
   the location button nor approximate location can serve.
 * While access granted through the system button lasts, every package sees
   it. Android grants the permission to the app, not to the caller, so once a
-  tap has granted precise access, `Geolocator.checkPermission()` answers
-  `whileInUse` and `Permission.location.status` reports it as granted. That
+  tap has granted precise access, `Permission.location.status` reports it as
+  granted and `Geolocator.checkPermission()` answers `whileInUse`, or
+  `always` where the app declares and holds background access. That
   access is one-time: the system revokes it about a minute after the app
   leaves the foreground and ends the app's process, so a status the app stored
   earlier does not describe the next launch.
