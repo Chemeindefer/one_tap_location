@@ -32,6 +32,31 @@ button and restrict precise location to it. See
 [Google Play location policy](#google-play-location-policy) for the date and
 the manifest changes.
 
+## Quick start
+
+Declare the location permissions in
+`android/app/src/main/AndroidManifest.xml`, and a usage description in
+`ios/Runner/Info.plist`; iOS also needs its deployment target at 15.0. See
+[Android setup](#android-setup) and [iOS setup](#ios-setup).
+
+Then show the button and read the position from the result:
+
+```dart
+OneTapLocationButton(
+  onResult: (OneTapLocationResult result) {
+    if (result case OneTapLocationGranted(:final position)) {
+      setState(() {
+        _coordinates = '${position.latitude}, ${position.longitude}';
+      });
+    }
+  },
+)
+```
+
+That is the whole integration: the system draws the button, asks for consent
+and reports the outcome. [Usage](#usage) handles the two outcomes this example
+ignores, and [Placement](#placement) covers where the button can be shown.
+
 ## Usage
 
 ```dart
@@ -289,6 +314,37 @@ location is restricted to the system button (see [Availability](#availability)):
 * When the request is interrupted before the user answers, for example
   because another permission request is in progress, the controller reports
   `OneTapLocationDiagnostic.tapWithoutAuthorization`.
+
+## Other location packages
+
+The widget reports one position per tap, so an app that also tracks the
+location, or needs it without a tap, keeps the package it already has. This
+plugin declares no runtime location permission of its own, and neither
+`geolocator` nor `permission_handler` declares one, so the app's own
+`ACCESS_FINE_LOCATION` declaration is the only one in the merged manifest.
+The entries this plugin does add are listed in
+[Android setup](#android-setup).
+
+What the packages share is the `onlyForLocationButton` flag described in
+[Google Play location policy](#google-play-location-policy):
+
+* With the flag, no other package obtains precise location. The flag
+  restricts precise location to the system button, so the runtime request that
+  `geolocator` and `permission_handler` issue offers approximate location
+  only, whatever the target API level of the app: `ACCESS_FINE_LOCATION` is
+  denied and `ACCESS_COARSE_LOCATION` granted. An app that needs precise
+  location for another feature declares `ACCESS_FINE_LOCATION` without the
+  flag, which the policy allows only for a core, ongoing feature that neither
+  the location button nor approximate location can serve.
+* While access granted through the system button lasts, every package sees
+  it. Android grants the permission to the app, not to the caller, so once a
+  tap has granted precise access, `Geolocator.checkPermission()` answers
+  `whileInUse` and `Permission.location.status` reports it as granted. That
+  access is one-time: the system revokes it about a minute after the app
+  leaves the foreground and ends the app's process, so a status the app stored
+  earlier does not describe the next launch.
+
+Checked with geolocator 14.1.1 and permission_handler 13.0.2.
 
 ## Testing
 

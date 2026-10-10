@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'one_tap_location'
-  s.version          = '0.1.1'
+  s.version          = '0.1.2'
   s.summary          = 'One-tap location using CLLocationButton.'
   s.description      = 'Flutter plugin that embeds CLLocationButton to obtain one-time location access with a single tap.'
   s.homepage         = 'https://github.com/Chemeindefer/one_tap_location'

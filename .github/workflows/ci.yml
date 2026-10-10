@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# A new push to the same branch supersedes the run in progress.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dart:
+    # The lowest Flutter the pubspec allows, and the current stable.
+    name: Dart on Flutter ${{ matrix.flutter }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        flutter: ['3.44.0', 'stable']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ matrix.flutter }}
+          cache: true
+      - run: flutter pub get
+      - name: Check the formatting
+        run: dart format --output=none --set-exit-if-changed .
+      - name: Analyze the package and the example
+        run: flutter analyze
+      - name: Test the package
+        run: flutter test
+      - name: Test the example
+        run: flutter test
+        working-directory: example
+
+  android:
+    name: Android unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+        working-directory: example
+      # Gradle reads the Flutter SDK from here; the file is not checked in.
+      - name: Point Gradle at the Flutter SDK
+        run: |
+          sdk="$(dirname "$(dirname "$(command -v flutter)")")"
+          echo "flutter.sdk=$sdk" > example/android/local.properties
+      - name: Test the plugin
+        run: ./gradlew --no-daemon :one_tap_location:testDebugUnitTest
+        working-directory: example/android
+
+  ios:
+    name: iOS unit tests
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+        working-directory: example
+      - name: Build for the simulator
+        run: flutter build ios --simulator --no-codesign
+        working-directory: example
+      # The runner's simulator names change with Xcode, so one is looked up.
+      - name: Test the plugin
+        run: |
+          udid=$(xcrun simctl list devices available --json | python3 -c 'import json,sys; d=json.load(sys.stdin)["devices"]; print(next(x["udid"] for r in d for x in d[r] if x["name"].startswith("iPhone")))')
+          xcodebuild test -workspace Runner.xcworkspace -scheme Runner -destination "id=$udid"
+        working-directory: example/ios

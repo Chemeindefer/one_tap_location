@@ -1,3 +1,16 @@
+## 0.1.2
+
+* Describes the package as the button that the Google Play location policy
+  requires, rather than as required itself: the rules apply to apps that
+  target Android 17 and need precise location only for one-time actions.
+* Adds a Quick start that shows the whole integration, ahead of the example
+  that handles every result.
+* Documents the package next to `geolocator` and `permission_handler`: the
+  app's own `ACCESS_FINE_LOCATION` declaration stays the only one in the
+  merged manifest, the `onlyForLocationButton` flag keeps other packages from
+  obtaining precise location, and access granted through the system button is
+  visible to every package for as long as it lasts.
+
 ## 0.1.1
 
 * Documents the `post_install` hook that an app needs in `ios/Podfile` to build

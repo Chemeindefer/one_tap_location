@@ -53,6 +53,9 @@ typedef OneTapLocationFallbackBuilder =
 /// A controller can be attached to only one button at a time. Dispose it when
 /// it is no longer needed.
 final class OneTapLocationController extends ChangeNotifier {
+  /// Creates a controller that no button is attached to yet.
+  OneTapLocationController();
+
   final StreamController<OneTapLocationDiagnostic> _diagnostics =
       StreamController<OneTapLocationDiagnostic>.broadcast();
   final Set<Object> _buttons = <Object>{};

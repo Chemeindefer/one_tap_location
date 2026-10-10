@@ -1,6 +1,6 @@
 name: one_tap_location
-description: Gets the location with one tap on the Android 17 system location button or iOS CLLocationButton, with a fallback on Android 7 to 16. Required by the Google Play location policy.
-version: 0.1.1
+description: Gets the location with one tap on the Android 17 system location button or iOS CLLocationButton, with a fallback on Android 7–16. The button that the Google Play policy requires.
+version: 0.1.2
 repository: https://github.com/Chemeindefer/one_tap_location
 issue_tracker: https://github.com/Chemeindefer/one_tap_location/issues
 topics:
