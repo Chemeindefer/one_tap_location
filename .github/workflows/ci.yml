@@ -28,7 +28,11 @@ jobs:
           flutter-version: ${{ matrix.flutter }}
           cache: true
       - run: flutter pub get
+      # The repository is formatted with the Dart of Flutter 3.44. The Dart of
+      # 3.47 formats four test files differently, so the check runs on one
+      # version; it moves when the package moves to a newer Flutter.
       - name: Check the formatting
+        if: matrix.flutter == '3.44.0'
         run: dart format --output=none --set-exit-if-changed .
       - name: Analyze the package and the example
         run: flutter analyze
@@ -53,11 +57,11 @@ jobs:
           cache: true
       - run: flutter pub get
         working-directory: example
-      # Gradle reads the Flutter SDK from here; the file is not checked in.
-      - name: Point Gradle at the Flutter SDK
-        run: |
-          sdk="$(dirname "$(dirname "$(command -v flutter)")")"
-          echo "flutter.sdk=$sdk" > example/android/local.properties
+      # gradlew, the wrapper jar and local.properties are not checked in.
+      # Flutter writes all three when it generates the build files.
+      - name: Generate the Android build files
+        run: flutter build apk --debug --config-only
+        working-directory: example
       - name: Test the plugin
         run: ./gradlew --no-daemon :one_tap_location:testDebugUnitTest
         working-directory: example/android
