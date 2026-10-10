@@ -13,27 +13,43 @@ concurrency:
 
 jobs:
   dart:
-    # The lowest Flutter the pubspec allows, and the current stable.
-    name: Dart on Flutter ${{ matrix.flutter }}
+    # The lowest Flutter the pubspec allows. The formatter check lives here
+    # because the repository is formatted with the Dart of Flutter 3.44; the
+    # Dart of 3.47 formats four test files differently. Both the check and
+    # this version move when the package moves to a newer Flutter.
+    name: Dart on the lowest supported Flutter
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        flutter: ['3.44.0', 'stable']
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: ${{ matrix.flutter }}
+          flutter-version: '3.44.0'
           cache: true
       - run: flutter pub get
-      # The repository is formatted with the Dart of Flutter 3.44. The Dart of
-      # 3.47 formats four test files differently, so the check runs on one
-      # version; it moves when the package moves to a newer Flutter.
       - name: Check the formatting
-        if: matrix.flutter == '3.44.0'
         run: dart format --output=none --set-exit-if-changed .
+      - name: Analyze the package and the example
+        run: flutter analyze
+      - name: Test the package
+        run: flutter test
+      - name: Test the example
+        run: flutter test
+        working-directory: example
+
+  dart-stable:
+    # The current stable, which most users are on. No flutter-version is
+    # given: the action resolves the newest release of the channel, and a
+    # version of "stable" is not a version it can resolve.
+    name: Dart on the current stable Flutter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
       - name: Analyze the package and the example
         run: flutter analyze
       - name: Test the package
