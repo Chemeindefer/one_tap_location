@@ -191,6 +191,10 @@ When a tap does not grant access within a few seconds, the controller reports
 later, the result is still reported, unless another button was tapped in the
 meantime.
 
+These rules decide whether the system grants access. They do not apply to
+access the app already holds: while an earlier tap still grants it, a tap on a
+button in any of those states reports a position.
+
 On Android 17 and later, the system draws the button above all Flutter
 content, and Flutter cannot clip, fade or cover it. The widget therefore hides
 the button while:
@@ -236,6 +240,28 @@ because the tapped one is unknown.
 
 The fallback button on Android 7–16 is an ordinary widget, so none of these
 rules apply to it.
+
+## iOS
+
+The first tap shows a system confirmation that explains the sharing. Once the
+user allows access, later taps report a position right away, and the
+confirmation does not come back when the app is started again.
+
+When the user leaves the app while the confirmation is open, by locking the
+phone or by switching to another app, the confirmation closes unanswered and
+the controller reports `OneTapLocationDiagnostic.tapWithoutAuthorization`.
+Taps that follow in the same run of the app report the diagnostic as well,
+without showing the confirmation again, so the button appears to do nothing.
+Starting the app again shows the confirmation.
+
+When the user turns off Precise Location for the app in the system settings,
+the system button reports an approximate position: `position.isPrecise` is
+false and `position.altitude` is null. The setting decides this whether access
+was granted before or after it changed.
+
+A tap reports the position that the system determined for it, which can be one
+the system already had, so two taps a moment apart can report the same
+position with the same `position.timestamp`.
 
 ## Android 7–16
 
